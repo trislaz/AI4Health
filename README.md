@@ -1,5 +1,6 @@
 # LINK: github.com/trislaz/ai4health  - Tutorial notebooks - AI4Health Summer School
 
+TROUBLESHOOTING: please install openslide-bin if they are missing: `uv add openslide-bin` or `uv pip install openslide-bin`
 > 👀​ How to use these notebooks ?
 > Navigate through the notebooks cell by cell. They are not independent; you will need to run preceding cells for subsequent ones to execute correctly. Many questions are scattered throughout the notebooks.
 > While questions in the first notebook are designed to familiarize you with WSI manipulation, those in the second may be broader and more open-ended. You are encouraged to solve these questions yourself (which is highly recommended) > or to simply refer to the answers provided in the answers.py file. Open questions will be addressed orally.
