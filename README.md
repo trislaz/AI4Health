@@ -1,10 +1,9 @@
 # Tutorial notebooks - AI4Health Summer School
 
 > 👀​ How to use these notebooks ?
-> Go through the notebooks cells by cells, they are not independant and you will need previous cells to run the later ones.
-> Many questions are scattered throughout the notebooks. Questions in the first notebook are interesting to get used to WSI manipulation, 
-> questions in the second may be a bit broader and open: you are free to solve these questions yourself (what I would advise) or to just copy the answers present in the `answers.py` file.
-> Open questions will be adressed orally. Alternatively, you may find the full corrected notebook in the first commit of this repo.
+> Navigate through the notebooks cell by cell. They are not independent; you will need to run preceding cells for subsequent ones to execute correctly. Many questions are scattered throughout the notebooks.
+> While questions in the first notebook are designed to familiarize you with WSI manipulation, those in the second may be broader and more open-ended. You are encouraged to solve these questions yourself (which is highly recommended) > or to simply refer to the answers provided in the answers.py file. Open questions will be addressed orally.
+> Alternatively, a fully corrected version of the notebook is available in the first commit of this repository.
 
 **_IMPORTANT_** First thing: If you have not done it yet, download this https://drive.google.com/file/d/1VN57GS0d-fVQkBlc63UC7jVXxnw4Dw_W/view?usp=sharing and untar it in this folder.
 You should now have an `./assets` subfolder.
