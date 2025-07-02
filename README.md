@@ -37,7 +37,7 @@ Then, install the dependencies in a local virtual environment:
 uv sync
 ```
 
-The env has been created in ./.env.
+The env has been created in `./.venv`.
 
 If you are working with VS Code (or any other IDE, really), you can select the Python kernel you would like to use within the notebook.
 This can be selected at the top right of the notebook window in VS Code.
