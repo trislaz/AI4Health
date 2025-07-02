@@ -1,4 +1,4 @@
-# Tutorial notebooks - AI4Health Summer School
+# LINK: github.com/trislaz/ai4health  - Tutorial notebooks - AI4Health Summer School
 
 > 👀​ How to use these notebooks ?
 > Navigate through the notebooks cell by cell. They are not independent; you will need to run preceding cells for subsequent ones to execute correctly. Many questions are scattered throughout the notebooks.
