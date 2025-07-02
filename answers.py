@@ -304,6 +304,24 @@ for item in captions:
 
 # Question 2.10
 
+prompts = {
+    "addition": lambda x: f"You are tasked to selectively degrade an image description by adding a the description of a new visual detail (and only that!). You will answer only with the new, degraded description. \n\n Original description: {x}",
+    "deletion": lambda x: f"You are tasked to selectively degrade an image description by removing the description of a visual detail from it (and only that!). You will answer only with the new, degraded description. \n\n Original description: {x}",
+    "modification": lambda x: f"You are tasked to selectively degrade an image description by modifying the description of a visual detail from it (and only that!) - modify it such that it mainly changes the meaning of its description. You will answer only with the new, degraded description. \n\n Original description: {x}",
+}
+
+def degrade_description(image_description):
+    # Randomly select a degradation type
+    deg_type = random.choice(list(prompts.keys()))
+    prompt = prompts[deg_type](image_description)
+
+    completion = client.chat(prompt, image_path=image_path)
+    return deg_type, completion
+
+deg_type, degraded_description = degrade_description(image_description)
+
+# Question 2.12
+
 # Using GPT generated prompts:
 prompts_from_gpt = [client.chat("You are an expert in histopathology. You are task to describe one pattern that could be present in a breast cancer slide. Answer exclusively by giving an example pattern.", max_tokens=10) for _ in range(3)]
 tokenized_prompts = tokenizer(prompts_from_gpt)
@@ -311,7 +329,7 @@ prompts_gpt_embeddings = clip_model.encode_text(tokenized_prompts)
 
 prompts = torch.vstack([prompts_report_embeddings, prompts_gpt_embeddings])
 
-# Question 2.11
+# Question 2.13
 
 # They augmented their tile dataset with a KMeans approach.
 # Each cluster being sampled uniformly.
@@ -350,3 +368,56 @@ unique_indices = torch.unique(combined_indices)
 kmeans_extracted_tiles = tiles[unique_indices]
 final_tiles = torch.concat([torch.tensor(prompt_extracted_tiles), torch.tensor(kmeans_extracted_tiles)])
 print(f"Final number of extracted tiles: {len(final_tiles)}")
+
+# Question 2.14
+
+# Let's define the text prompts.
+text_prompts = ["A histopathological tile with tumour cells", "An histopathological tile without tumour cells"]
+text_clip = tokenizer(text_prompts)
+
+tumor_imgs = [Image.open(p) for p in tumor_tiles]
+stroma_imgs = [Image.open(p) for p in stroma_tiles]
+
+tumor_img_clip = torch.stack([preprocess_clip(img) for img in tumor_imgs])
+stroma_img_clip = torch.stack([preprocess_clip(img) for img in stroma_imgs])
+
+# Get the embeddings
+with torch.no_grad():
+    tumor_embeddings = clip_model.encode_image(tumor_img_clip)
+    stroma_embeddings = clip_model.encode_image(stroma_img_clip)
+    text_embeddings = clip_model.encode_text(text_clip)
+
+# Compute logits using our simple cosine function
+tumor_logits = cosine(tumor_embeddings, text_embeddings)
+stroma_logits = cosine(stroma_embeddings, text_embeddings)
+
+table = Table(title="CLIP Classification Logits")
+table.add_column("Image Sample", justify="left", style="cyan", no_wrap=True)
+table.add_column(f"Logit: '{text_prompts[0]}'", justify="right")
+table.add_column(f"Logit: '{text_prompts[1]}'", justify="right")
+
+tumor_probs = tumor_logits.softmax(dim=-1)
+stroma_probs = stroma_logits.softmax(dim=-1)
+
+for i, (logits, p) in enumerate(zip(tumor_probs, tumor_tiles)):
+    l1, l2 = logits
+    sample_name = f"tumor_{i} ({Path(p).name})"
+    table.add_row(sample_name, f"{l1:.4f}", f"{l2:.4f}")
+
+table.add_section()
+for i, (logits, p) in enumerate(zip(stroma_probs, stroma_tiles)):
+    l1, l2 = logits
+    sample_name = f"stroma_{i} ({Path(p).name})"
+    table.add_row(sample_name, f"{l1:.4f}", f"{l2:.4f}")
+
+console.print(table)
+
+tumor_preds = tumor_probs.argmax(dim=-1)
+stroma_preds = stroma_probs.argmax(dim=-1)
+
+tumor_accuracy = (tumor_preds == 0).float().mean()
+stroma_accuracy = (stroma_preds == 1).float().mean()
+
+console.print(f"Tumor tile classification accuracy: {tumor_accuracy.item():.2f}")
+console.print(f"Stroma tile classification accuracy: {stroma_accuracy.item():.2f}")
+console.print(f"Overall classification accuracy: {(tumor_accuracy + stroma_accuracy) / 2:.2f}")
