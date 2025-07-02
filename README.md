@@ -13,3 +13,43 @@ You should now have an `./assets` subfolder.
 These are useful data that I forgot to put in the initial tar
 
 LINK : https://drive.google.com/file/d/1pX_Ai2rXVnPhk4vdk8cEqoQWeY57osn7/view?usp=sharing 
+
+# Requirements for the course:
+
+You will need to install a Python environment with the required dependencies - defined in the `pyproject.toml` file.
+To download uv, you can use the following command:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+on Linux, or 
+
+```
+
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex" 
+```
+on Windows, or the [astral installer webpage](https://docs.astral.sh/uv/getting-started/installation/#standalone-installer).
+
+Then, install the dependencies in a local virtual environment:
+
+```bash
+uv sync
+```
+
+The env has been created in ./.env.
+
+If you are working with VS Code (or any other IDE, really), you can select the Python kernel you would like to use within the notebook.
+This can be selected at the top right of the notebook window in VS Code.
+The one you want to use is located here: `.venv/bin/python`.
+If it does not appear directly, then try to independently select a Python interpreter for VS Code:
+
+type `Cmd+Shift+P` (or `Ctrl+Shift+P` on Windows), type `Python: select interpreter` and select `.venv/bin/python`.
+
+If you are using Jupyter Lab, then:
+
+```bash
+uv run --with jupyter jupyter lab
+```
+
+and open `http://localhost:8888/lab` on your browser.
